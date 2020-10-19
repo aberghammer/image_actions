@@ -2,9 +2,9 @@ import json
 import glob
 import cv2
 
-images = [cv2.imread(file) for file in glob.glob("C:/Users/andre/PycharmProjects/labelImg/img/0-102/img/*")]
+images = [cv2.imread(file) for file in glob.glob("./img/0-102/img/*")]
 #image1 = cv2.imread("./test1.jpg")
-with open('C:/Users/andre/PycharmProjects/labelImg/img/0-102/Character.json') as f:
+with open('./img/0-102/Character.json') as f:
   data = json.load(f)
 
 print(data)
@@ -40,7 +40,7 @@ for img in images:
     #endx:endx+h, startx:startx+w
 
     crop_img = cv2.resize(crop_img, (512, 512))
-    cv2.imwrite("C:/Users/andre/PycharmProjects/labelImg/img/0-102/results/"+str(index)+".png", crop_img)
+    cv2.imwrite("./img/0-102/results/"+str(index)+".png", crop_img)
 
 
     #cv2.imshow("image",crop_img)
