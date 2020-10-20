@@ -1,51 +1,54 @@
 import json
 import glob
 import cv2
+import argparse
+from os.path import join
 
-images = [cv2.imread(file) for file in glob.glob("./img/0-102/img/*")]
-#image1 = cv2.imread("./test1.jpg")
-with open('./img/0-102/Character.json') as f:
-  data = json.load(f)
+# command line parser
+parser = argparse.ArgumentParser(description="Process a folder of images with a .json")
+parser.add_argument('-i', "--image_path", type=str, help="path to image folder")
+parser.add_argument('-j', "--json_path", type=str, help="path to .json file")
+parser.add_argument('-o', "--out_path", type=str, help="path to output folder")
+args = parser.parse_args()
 
-print(data)
+# read images and json
+with open(args.json_path, "r") as f:
+    data = json.load(f)
+
+# processing
 index = 0
-print(len(data[index]["annotations"]))
-for img in images:
-  inner = 0
-  for item in data[index]["annotations"]:
-    (height1, width1) = img.shape[:2]
-    print(width1)
-    print(height1)
-    x = data[index]["annotations"][inner]["coordinates"]["x"]
-    y = data[index]["annotations"][inner]["coordinates"]["y"]
-    w = data[index]["annotations"][inner]["coordinates"]["width"]
-    h = data[index]["annotations"][inner]["coordinates"]["height"]
-    print("index" + str(index) + "inner" + str(inner))
+while index < len(data):
+    print(data[index]["image"])
+    path = args.image_path + data[index]["image"]
+    img = cv2.imread(path)
+    inner = 0
+    for item in data[index]["annotations"]:
+        print(img.shape)
+        x = data[index]["annotations"][inner]["coordinates"]["x"]
+        y = data[index]["annotations"][inner]["coordinates"]["y"]
+        w = data[index]["annotations"][inner]["coordinates"]["width"]
+        h = data[index]["annotations"][inner]["coordinates"]["height"]
 
-    startx = int(x - (w/2))
-    print("startx: ", startx)
-    endx = int(y - (h/2))
-    print("endx: ", endx)
-    starty = int(x + (w/2))
-    print("starty: ", starty)
-    endy = int(y + int(h/2))
-    print("endy: ", endy)
+        botleftx = int(x - (w / 2))
+        botlefty = int(y - (h / 2))
+        print("botleft: ", botleftx, botlefty)
+        toprightx = int(x + (w / 2))
+        toprighty = int(y + int(h / 2))
+        print("topright: ", toprightx, toprighty)
 
-    #img = cv2.circle(img, (393 - int(187/2), 102 - int(172/2)), 5, (0,0,0), 5)
-    #img = cv2.circle(img, (393 + int(187/2), 102 + int(172/2)), 5, (0,0,0), 5)
+        # img = cv2.circle(img, (393 - int(187/2), 102 - int(172/2)), 5, (0,0,0), 5)
+        # img = cv2.circle(img, (393 + int(187/2), 102 + int(172/2)), 5, (0,0,0), 5)
 
-    #cv2.rectangle(image1, (rects[1], rects[2], rects[3], rects[4]), (255,255,255), 1)
-    #cv2.rectangle(img, (startx, endx),(starty, endy), (0, 0, 0), 0)
-    crop_img = img[endx:int(endx+h), startx:int(startx+w)]
-    #endx:endx+h, startx:startx+w
+        # cv2.rectangle(image1, (rects[1], rects[2], rects[3], rects[4]), (255,255,255), 1)
+        # cv2.rectangle(img, (startx, endx),(starty, endy), (0, 0, 0), 0)
+        crop_img = img[botlefty:toprighty, botleftx:toprightx, :]
+        # endx:endx+h, startx:startx+w
 
-    crop_img = cv2.resize(crop_img, (512, 512))
-    cv2.imwrite("./img/0-102/results/"+str(index)+".png", crop_img)
-
-
-    #cv2.imshow("image",crop_img)
-    #cv2.waitKey(0)
-    inner = inner + 1
-  index = index + 1
-
-
+        crop_img = cv2.resize(crop_img, (512, 512))
+        if args.out_path is not None:
+            cv2.imwrite(args.out_path + data[index]["image"][:-4] + ".png", crop_img)
+        else:
+            cv2.imshow("image", crop_img)
+            cv2.waitKey(0)
+        inner = inner + 1
+    index = index + 1
