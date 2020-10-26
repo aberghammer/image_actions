@@ -2,6 +2,12 @@ import json
 import cv2
 import argparse
 
+"""
+    Needs at least an image folder (-i, e.g. "Thief/") for the predefined basepath ("D:/Datasets/).
+    All paths can be given completely or corresponding to the basepath.
+    To save the images, start with --save, else there will just be a preview mode.
+"""
+
 # command line parser
 parser = argparse.ArgumentParser(description="Process a folder of images with a .json")
 parser.add_argument('-p', "--base_path", type=str, default="D:/Datasets/", help="basepath of dataset folder")
