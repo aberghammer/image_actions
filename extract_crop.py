@@ -36,9 +36,9 @@ while index < len(data):
     print(data[index]["image"])
     path = args.base_path + args.image_path + data[index]["image"]
     img = cv2.imread(path)
+    print(img.shape)
     inner = 0
     for item in data[index]["annotations"]:
-        print(img.shape)
         x = data[index]["annotations"][inner]["coordinates"]["x"]
         y = data[index]["annotations"][inner]["coordinates"]["y"]
         w = data[index]["annotations"][inner]["coordinates"]["width"]
@@ -46,10 +46,9 @@ while index < len(data):
 
         botleftx = int(x - (w / 2))
         botlefty = int(y - (h / 2))
-        print("botleft: ", botleftx, botlefty)
         toprightx = int(x + (w / 2))
         toprighty = int(y + int(h / 2))
-        print("topright: ", toprightx, toprighty)
+        print("face: ", str(inner+1), " | botleft: ", botleftx, botlefty, " | topright: ", toprightx, toprighty)
 
         # img = cv2.circle(img, (393 - int(187/2), 102 - int(172/2)), 5, (0,0,0), 5)
         # img = cv2.circle(img, (393 + int(187/2), 102 + int(172/2)), 5, (0,0,0), 5)
@@ -61,7 +60,7 @@ while index < len(data):
 
         crop_img = cv2.resize(crop_img, (512, 512))
         if args.save is True:
-            cv2.imwrite(args.base_path + args.out_path + folder + data[index]["image"][:-4] + ".png", crop_img)
+            cv2.imwrite(args.base_path + args.out_path + folder + str(inner) + data[index]["image"][:-4] + ".png", crop_img)
         else:
             cv2.imshow("image", crop_img)
             cv2.waitKey(0)
