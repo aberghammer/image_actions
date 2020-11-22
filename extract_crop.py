@@ -56,13 +56,8 @@ while index < len(data):
         toprighty = int(y + int(h / 2))
         print("face: ", str(inner+1), " | botleft: ", botleftx, botlefty, " | topright: ", toprightx, toprighty)
 
-        # img = cv2.circle(img, (393 - int(187/2), 102 - int(172/2)), 5, (0,0,0), 5)
-        # img = cv2.circle(img, (393 + int(187/2), 102 + int(172/2)), 5, (0,0,0), 5)
 
-        # cv2.rectangle(image1, (rects[1], rects[2], rects[3], rects[4]), (255,255,255), 1)
-        # cv2.rectangle(img, (startx, endx),(starty, endy), (0, 0, 0), 0)
         crop_img = img[botlefty:toprighty, botleftx:toprightx, :]
-        # endx:endx+h, startx:startx+w
 
         crop_img = cv2.resize(crop_img, (512, 512))
         if args.save is True:
